@@ -22,7 +22,7 @@ The XML Loader takes a JSON file as configuration, an example is given below.
 {
         "mongoURI":"mongodb://localhost:27017/test?retryWrites=true",
         "database": "product_catalog",
-        "xml_file": "/Users/christian.kurze/Downloads/2018-06_Busch-Jaeger_2018_ETIM_6.0.xml",
+        "xml_file": "/Users/christian.kurze/Downloads/2018-06_Busch-Jaeger_2018_ETIM_6.0.zip",
         "mapping": {
           "HEADER": "catalog",
           "PRODUCT": "product"
@@ -34,7 +34,7 @@ The XML Loader takes a JSON file as configuration, an example is given below.
 The parameters are as following:
 - monogURI: MongoDB URI following the URI connection string syntax
 - database: The MongoDB database where to write the data
-- xml_file: The absolute path to the XML file to be imported
+- xml_file: The absolute path to the **zipped** XML file to be imported
 - mapping: A mapping of XML tags to collection names - all occurences of this tag will be written into the mentioned collections
 - dropCollections: Boolean to indicate if the collections should be dropped before inserting data
 
@@ -46,5 +46,4 @@ java -jar XMLImportBulk.jar -c config/sample.json
 
 ## Future Improvements
 - More clever handling of the stack (not needed elements are written to the internal stack consuming memory)
-- Leverage the native ZIP capabilities of Java to process zipped XMLs instead of (potentially large) unpacked XML files
  

@@ -1,8 +1,10 @@
 package de.cksw.xmlbulkimport;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.Map;
 import java.util.logging.LogManager;
+import java.util.zip.ZipInputStream;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -11,6 +13,7 @@ import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
+import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
 import com.mongodb.MongoClient;
@@ -56,14 +59,19 @@ public class XMLImportBulk {
 		    spf.setNamespaceAware(true);
 		    SAXParser saxParser = spf.newSAXParser();
 		    XMLReader xmlReader = saxParser.getXMLReader();
+
+		    ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(options.getOption("xml_file", String.class)));
+		    logger.info("Process File: {}", zipInputStream.getNextEntry().getName());
+		    
 		    XMLImportHandler xmlImportHandler = new XMLImportHandler(mongoClient, options);
 		    xmlReader.setContentHandler(xmlImportHandler);
-		    xmlReader.parse(convertToFileURL(options.getOption("xml_file", String.class)));
+		    xmlReader.parse(new InputSource(zipInputStream));
 		    
-		    System.out.println("finished");
+		    logger.info("done");
 		}
 		catch(Exception e) {
-			System.err.println("Error " + e.getMessage());
+			logger.error("Error: {}", e.getMessage());
+			e.printStackTrace();
 		}
 
 	}

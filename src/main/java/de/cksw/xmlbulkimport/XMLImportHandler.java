@@ -64,22 +64,24 @@ public class XMLImportHandler extends DefaultHandler {
             if (pop.keySet().size()==1) stashable = value; // single value
             else if (StringUtils.isBlank(value)) pop.remove(TEXTKEY);
         }
-        Document parent = stack.get(0);
-        if (!parent.containsKey(tagName(localName))) {   // add new object
-            parent.put( tagName(localName), stashable );
+        if (stack.size() > 0) {
+	        Document parent = stack.get(0);
+	        if (!parent.containsKey(tagName(localName))) {   // add new object
+	            parent.put( tagName(localName), stashable );
+	        }
+	        else {                                  // aggregate into arrays
+	            Object work = parent.get(tagName(localName));
+	            if (work instanceof ArrayList) {
+	                ((ArrayList)work).add(stashable);
+	            }
+	            else {
+	                parent.put(tagName(localName),new ArrayList());
+	                parent.get(tagName(localName), ArrayList.class).add(work);
+	                parent.get(tagName(localName), ArrayList.class).add(stashable);
+	            }
+	        }
         }
-        else {                                  // aggregate into arrays
-            Object work = parent.get(tagName(localName));
-            if (work instanceof ArrayList) {
-                ((ArrayList)work).add(stashable);
-            }
-            else {
-                parent.put(tagName(localName),new ArrayList());
-                parent.get(tagName(localName), ArrayList.class).add(work);
-                parent.get(tagName(localName), ArrayList.class).add(stashable);
-            }
-        }
-        
+	        
         for (String tagName: mapping.keySet()) {
             if (localName.equals(tagName)) {
 	    	    		try {
@@ -87,7 +89,7 @@ public class XMLImportHandler extends DefaultHandler {
 	    	    		}
 	    	    		catch (Exception e) {
 	    	    			System.err.println(e.getMessage());
-	    	    			e.printStackTrace();
+//	    	    			e.printStackTrace();
 	    	    		}
 	    	    		break;
 	    	    }
