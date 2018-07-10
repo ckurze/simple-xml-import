@@ -1,0 +1,10 @@
+{
+        "mongoURI":"mongodb://localhost:27017/test?retryWrites=true",
+        "database": "product_catalog",
+        "xml_file": "/Users/christian.kurze/Downloads/2018-06_Busch-Jaeger_2018_ETIM_6.0.xml",
+        "mapping": {
+          "HEADER": "catalog",
+          "PRODUCT": "product"
+        },
+        "dropCollections": true
+}
